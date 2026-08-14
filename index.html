@@ -1,0 +1,421 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hidden Gem — 점심시간 12분, 고민은 지도 한 장으로 끝낸다</title>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" />
+    <link
+      rel="stylesheet"
+      as="style"
+      crossorigin
+      href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              base: "#FAF8F5",
+              ink: "#2B2825",
+              terracotta: "#C96F4A",
+              open: "#6B8F71",
+              closed: "#B5544A",
+            },
+            fontFamily: {
+              sans: ["Pretendard", "sans-serif"],
+            },
+            borderRadius: {
+              card: "8px",
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      body {
+        font-family: "Pretendard", sans-serif;
+      }
+      .card-shadow {
+        box-shadow: 0 1px 3px rgba(43, 40, 37, 0.06);
+      }
+      .star {
+        color: #c96f4a;
+      }
+    </style>
+  </head>
+  <body class="bg-base text-ink antialiased">
+    <!-- 헤더 -->
+    <header class="border-b border-ink/10">
+      <div
+        class="max-w-6xl mx-auto px-6 py-5 flex items-center justify-between"
+      >
+        <div class="flex items-center gap-2">
+          <span class="text-xl font-extrabold tracking-tight">Hidden Gem</span>
+        </div>
+        <nav
+          class="hidden md:flex items-center gap-8 text-sm font-medium text-ink/70"
+        >
+          <a href="#popular" class="hover:text-ink transition-colors"
+            >인기 맛집</a
+          >
+          <a href="#reviews" class="hover:text-ink transition-colors"
+            >최근 리뷰</a
+          >
+          <a href="#features" class="hover:text-ink transition-colors"
+            >서비스 특징</a
+          >
+        </nav>
+        <button
+          class="bg-terracotta text-base font-bold px-4 py-2 rounded-card hover:scale-[0.98] transition-transform"
+        >
+          시작하기
+        </button>
+      </div>
+    </header>
+
+    <!-- 히어로 -->
+    <section class="max-w-6xl mx-auto px-6 pt-20 pb-24 md:pt-28 md:pb-32">
+      <div class="max-w-3xl">
+        <p class="text-terracotta font-bold text-sm mb-4 tracking-wide">
+          오전 11시 30분, 오늘도 시작되는 그 고민
+        </p>
+        <h1
+          class="text-4xl md:text-6xl font-extrabold leading-[1.15] tracking-tight mb-6"
+        >
+          점심시간 12분,<br />고민은 지도 한 장으로 끝낸다
+        </h1>
+        <p class="text-base md:text-lg text-ink/70 leading-relaxed mb-10">
+          광고성 리뷰는 그만. 회사 근처 숨은 맛집을 5분 안에 찾아드립니다. 지금
+          영업 중인 곳만, 진짜 리뷰만.
+        </p>
+        <div class="flex flex-wrap gap-3">
+          <button
+            class="bg-terracotta text-base font-bold px-7 py-4 rounded-card hover:scale-[0.98] transition-transform"
+          >
+            오늘의 추천 받기
+          </button>
+          <button
+            class="bg-transparent border border-ink/20 text-ink font-bold px-7 py-4 rounded-card hover:scale-[0.98] transition-transform"
+          >
+            근처 맛집 둘러보기
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 인기 맛집 카드 -->
+    <section id="popular" class="max-w-6xl mx-auto px-6 py-20 md:py-24">
+      <div class="mb-12">
+        <h2 class="text-2xl md:text-3xl font-bold mb-2">지금 뜨는 인기 맛집</h2>
+        <p class="text-ink/60">회사 근처에서 가장 많이 사랑받는 곳들</p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Card 1 -->
+        <article class="bg-white rounded-card card-shadow overflow-hidden">
+          <div
+            class="h-44 bg-ink/10 flex items-center justify-center text-ink/30 text-sm"
+          >
+            사진
+          </div>
+          <div class="p-8">
+            <div class="flex items-start justify-between mb-2">
+              <h3 class="text-lg font-bold">진순설렁탕</h3>
+              <span
+                class="text-xs font-bold text-open bg-open/10 px-2 py-1 rounded-card whitespace-nowrap"
+                >영업중</span
+              >
+            </div>
+            <p class="text-sm text-ink/60 mb-4">한식 · 도보 4분</p>
+            <div class="flex items-center gap-1 text-sm font-bold">
+              <span class="star">★★★★★</span>
+              <span class="text-ink/50 font-normal ml-1">4.8 (312)</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- Card 2 -->
+        <article class="bg-white rounded-card card-shadow overflow-hidden">
+          <div
+            class="h-44 bg-ink/10 flex items-center justify-center text-ink/30 text-sm"
+          >
+            사진
+          </div>
+          <div class="p-8">
+            <div class="flex items-start justify-between mb-2">
+              <h3 class="text-lg font-bold">스미레 라멘</h3>
+              <span
+                class="text-xs font-bold text-open bg-open/10 px-2 py-1 rounded-card whitespace-nowrap"
+                >영업중</span
+              >
+            </div>
+            <p class="text-sm text-ink/60 mb-4">일식 · 도보 6분</p>
+            <div class="flex items-center gap-1 text-sm font-bold">
+              <span class="star">★★★★★</span>
+              <span class="text-ink/50 font-normal ml-1">4.7 (201)</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- Card 3 -->
+        <article class="bg-white rounded-card card-shadow overflow-hidden">
+          <div
+            class="h-44 bg-ink/10 flex items-center justify-center text-ink/30 text-sm"
+          >
+            사진
+          </div>
+          <div class="p-8">
+            <div class="flex items-start justify-between mb-2">
+              <h3 class="text-lg font-bold">뜨락 파스타</h3>
+              <span
+                class="text-xs font-bold text-closed bg-closed/10 px-2 py-1 rounded-card whitespace-nowrap"
+                >영업종료</span
+              >
+            </div>
+            <p class="text-sm text-ink/60 mb-4">양식 · 도보 8분</p>
+            <div class="flex items-center gap-1 text-sm font-bold">
+              <span class="star">★★★★☆</span>
+              <span class="text-ink/50 font-normal ml-1">4.5 (128)</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- Card 4 -->
+        <article class="bg-white rounded-card card-shadow overflow-hidden">
+          <div
+            class="h-44 bg-ink/10 flex items-center justify-center text-ink/30 text-sm"
+          >
+            사진
+          </div>
+          <div class="p-8">
+            <div class="flex items-start justify-between mb-2">
+              <h3 class="text-lg font-bold">마라공방</h3>
+              <span
+                class="text-xs font-bold text-open bg-open/10 px-2 py-1 rounded-card whitespace-nowrap"
+                >영업중</span
+              >
+            </div>
+            <p class="text-sm text-ink/60 mb-4">중식 · 도보 5분</p>
+            <div class="flex items-center gap-1 text-sm font-bold">
+              <span class="star">★★★★★</span>
+              <span class="text-ink/50 font-normal ml-1">4.6 (167)</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- Card 5 -->
+        <article class="bg-white rounded-card card-shadow overflow-hidden">
+          <div
+            class="h-44 bg-ink/10 flex items-center justify-center text-ink/30 text-sm"
+          >
+            사진
+          </div>
+          <div class="p-8">
+            <div class="flex items-start justify-between mb-2">
+              <h3 class="text-lg font-bold">본죽마을</h3>
+              <span
+                class="text-xs font-bold text-open bg-open/10 px-2 py-1 rounded-card whitespace-nowrap"
+                >영업중</span
+              >
+            </div>
+            <p class="text-sm text-ink/60 mb-4">한식 · 도보 3분</p>
+            <div class="flex items-center gap-1 text-sm font-bold">
+              <span class="star">★★★★☆</span>
+              <span class="text-ink/50 font-normal ml-1">4.4 (95)</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- Card 6 -->
+        <article class="bg-white rounded-card card-shadow overflow-hidden">
+          <div
+            class="h-44 bg-ink/10 flex items-center justify-center text-ink/30 text-sm"
+          >
+            사진
+          </div>
+          <div class="p-8">
+            <div class="flex items-start justify-between mb-2">
+              <h3 class="text-lg font-bold">카페 온도</h3>
+              <span
+                class="text-xs font-bold text-closed bg-closed/10 px-2 py-1 rounded-card whitespace-nowrap"
+                >영업종료</span
+              >
+            </div>
+            <p class="text-sm text-ink/60 mb-4">카페 · 도보 2분</p>
+            <div class="flex items-center gap-1 text-sm font-bold">
+              <span class="star">★★★★★</span>
+              <span class="text-ink/50 font-normal ml-1">4.9 (403)</span>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- 최근 리뷰 -->
+    <section id="reviews" class="bg-white border-y border-ink/10">
+      <div class="max-w-6xl mx-auto px-6 py-20 md:py-24">
+        <div class="mb-12">
+          <h2 class="text-2xl md:text-3xl font-bold mb-2">방금 올라온 리뷰</h2>
+          <p class="text-ink/60">진짜 직장인들이 남긴 한 줄 후기</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="p-8 rounded-card border border-ink/10">
+            <div class="flex items-center justify-between mb-3">
+              <span class="font-bold">진순설렁탕</span>
+              <span class="star text-sm">★★★★★</span>
+            </div>
+            <p class="text-sm text-ink/70 leading-relaxed mb-4">
+              "국물이 진짜 진하고 깔끔해요. 12시 전에 가면 웨이팅 없이 바로 먹을
+              수 있어서 점심시간에 딱 좋습니다."
+            </p>
+            <div class="flex items-center justify-between text-xs text-ink/40">
+              <span>hyun_j</span>
+              <span>3시간 전</span>
+            </div>
+          </div>
+
+          <div class="p-8 rounded-card border border-ink/10">
+            <div class="flex items-center justify-between mb-3">
+              <span class="font-bold">스미레 라멘</span>
+              <span class="star text-sm">★★★★☆</span>
+            </div>
+            <p class="text-sm text-ink/70 leading-relaxed mb-4">
+              "차슈가 두툼하게 들어가서 만족스러웠어요. 다만 자리가 좁아서 혼자
+              갈 때가 더 편해요."
+            </p>
+            <div class="flex items-center justify-between text-xs text-ink/40">
+              <span>minji.k</span>
+              <span>5시간 전</span>
+            </div>
+          </div>
+
+          <div class="p-8 rounded-card border border-ink/10">
+            <div class="flex items-center justify-between mb-3">
+              <span class="font-bold">마라공방</span>
+              <span class="star text-sm">★★★★★</span>
+            </div>
+            <p class="text-sm text-ink/70 leading-relaxed mb-4">
+              "맵기 조절이 잘 돼서 좋아요. 회사 사람들이랑 단체로 가기에도
+              괜찮은 규모입니다."
+            </p>
+            <div class="flex items-center justify-between text-xs text-ink/40">
+              <span>doyoon</span>
+              <span>어제</span>
+            </div>
+          </div>
+
+          <div class="p-8 rounded-card border border-ink/10">
+            <div class="flex items-center justify-between mb-3">
+              <span class="font-bold">본죽마을</span>
+              <span class="star text-sm">★★★★☆</span>
+            </div>
+            <p class="text-sm text-ink/70 leading-relaxed mb-4">
+              "속이 안 좋을 때 자주 찾는 곳. 양은 적당하고 가격도 부담 없어서
+              자주 이용해요."
+            </p>
+            <div class="flex items-center justify-between text-xs text-ink/40">
+              <span>seoyeon__</span>
+              <span>어제</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 서비스 특징 -->
+    <section id="features" class="max-w-6xl mx-auto px-6 py-20 md:py-24">
+      <div class="mb-12">
+        <h2 class="text-2xl md:text-3xl font-bold mb-2">
+          Hidden Gem이 다른 이유
+        </h2>
+        <p class="text-ink/60">광고 대신 속도와 신뢰를 택했습니다</p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="p-8 rounded-card bg-ink/[0.03]">
+          <div
+            class="w-10 h-10 rounded-card bg-terracotta/10 flex items-center justify-center mb-6"
+          >
+            <span class="text-terracotta font-bold">01</span>
+          </div>
+          <h3 class="font-bold mb-2">지금 영업 중인 곳만</h3>
+          <p class="text-sm text-ink/60 leading-relaxed">
+            문 닫은 곳은 애초에 보여주지 않아요. 영업시간 필터로 헛걸음을
+            없앴습니다.
+          </p>
+        </div>
+
+        <div class="p-8 rounded-card bg-ink/[0.03]">
+          <div
+            class="w-10 h-10 rounded-card bg-terracotta/10 flex items-center justify-center mb-6"
+          >
+            <span class="text-terracotta font-bold">02</span>
+          </div>
+          <h3 class="font-bold mb-2">도보 10분 반경</h3>
+          <p class="text-sm text-ink/60 leading-relaxed">
+            회사 근처, 딱 걸어갈 수 있는 거리의 맛집만 추립니다.
+          </p>
+        </div>
+
+        <div class="p-8 rounded-card bg-ink/[0.03]">
+          <div
+            class="w-10 h-10 rounded-card bg-terracotta/10 flex items-center justify-center mb-6"
+          >
+            <span class="text-terracotta font-bold">03</span>
+          </div>
+          <h3 class="font-bold mb-2">광고 없는 진짜 리뷰</h3>
+          <p class="text-sm text-ink/60 leading-relaxed">
+            별점과 한 줄 코멘트 중심으로, 광고성 문구 없이 빠르게 판단할 수
+            있어요.
+          </p>
+        </div>
+
+        <div class="p-8 rounded-card bg-ink/[0.03]">
+          <div
+            class="w-10 h-10 rounded-card bg-terracotta/10 flex items-center justify-center mb-6"
+          >
+            <span class="text-terracotta font-bold">04</span>
+          </div>
+          <h3 class="font-bold mb-2">오늘의 추천</h3>
+          <p class="text-sm text-ink/60 leading-relaxed">
+            고민될 땐 가중치 랜덤 추천 한 번으로 결정 끝. 다시 추천받기도
+            가능해요.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 푸터 -->
+    <footer class="bg-ink text-base">
+      <div class="max-w-6xl mx-auto px-6 py-16">
+        <div
+          class="flex flex-col md:flex-row md:items-center md:justify-between gap-8 mb-10"
+        >
+          <span class="text-xl font-extrabold">Hidden Gem</span>
+          <nav class="flex flex-wrap gap-6 text-sm text-base/70">
+            <a href="#popular" class="hover:text-base transition-colors"
+              >인기 맛집</a
+            >
+            <a href="#reviews" class="hover:text-base transition-colors"
+              >최근 리뷰</a
+            >
+            <a href="#features" class="hover:text-base transition-colors"
+              >서비스 특징</a
+            >
+          </nav>
+        </div>
+        <div
+          class="border-t border-base/10 pt-8 flex flex-col md:flex-row md:items-center md:justify-between gap-2 text-xs text-base/50"
+        >
+          <p>© 2026 Hidden Gem. 학습용 토이 프로젝트입니다.</p>
+          <p>
+            매일 반복되는 점심 메뉴 고민을 해결해주는 직장인 맛집 리뷰 서비스
+          </p>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
