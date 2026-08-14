@@ -15,6 +15,10 @@
     <script>
       tailwind.config = {
         theme: {
+          screens: {
+            tablet: "768px",
+            desktop: "1440px",
+          },
           extend: {
             colors: {
               base: "#FAF8F5",
@@ -55,7 +59,7 @@
           <span class="text-xl font-extrabold tracking-tight">Hidden Gem</span>
         </div>
         <nav
-          class="hidden md:flex items-center gap-8 text-sm font-medium text-ink/70"
+          class="hidden tablet:flex items-center gap-8 text-sm font-medium text-ink/70"
         >
           <a href="#popular" class="hover:text-ink transition-colors"
             >인기 맛집</a
@@ -76,17 +80,19 @@
     </header>
 
     <!-- 히어로 -->
-    <section class="max-w-6xl mx-auto px-6 pt-20 pb-24 md:pt-28 md:pb-32">
+    <section
+      class="max-w-6xl mx-auto px-6 pt-12 pb-16 tablet:pt-20 tablet:pb-24 desktop:pt-28 desktop:pb-32"
+    >
       <div class="max-w-3xl">
         <p class="text-terracotta font-bold text-sm mb-4 tracking-wide">
           오전 11시 30분, 오늘도 시작되는 그 고민
         </p>
         <h1
-          class="text-4xl md:text-6xl font-extrabold leading-[1.15] tracking-tight mb-6"
+          class="text-4xl tablet:text-5xl desktop:text-6xl font-extrabold leading-[1.15] tracking-tight mb-6"
         >
           점심시간 12분,<br />고민은 지도 한 장으로 끝낸다
         </h1>
-        <p class="text-base md:text-lg text-ink/70 leading-relaxed mb-10">
+        <p class="text-base tablet:text-lg text-ink/70 leading-relaxed mb-10">
           광고성 리뷰는 그만. 회사 근처 숨은 맛집을 5분 안에 찾아드립니다. 지금
           영업 중인 곳만, 진짜 리뷰만.
         </p>
@@ -106,13 +112,20 @@
     </section>
 
     <!-- 인기 맛집 카드 -->
-    <section id="popular" class="max-w-6xl mx-auto px-6 py-20 md:py-24">
+    <section
+      id="popular"
+      class="max-w-6xl mx-auto px-6 py-12 tablet:py-20 desktop:py-24"
+    >
       <div class="mb-12">
-        <h2 class="text-2xl md:text-3xl font-bold mb-2">지금 뜨는 인기 맛집</h2>
+        <h2 class="text-2xl tablet:text-3xl font-bold mb-2">
+          지금 뜨는 인기 맛집
+        </h2>
         <p class="text-ink/60">회사 근처에서 가장 많이 사랑받는 곳들</p>
       </div>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div
+        class="grid grid-cols-1 tablet:grid-cols-2 desktop:grid-cols-3 gap-6"
+      >
         <!-- Card 1 -->
         <article class="bg-white rounded-card card-shadow overflow-hidden">
           <div
@@ -120,7 +133,7 @@
           >
             사진
           </div>
-          <div class="p-8">
+          <div class="p-5 tablet:p-6 desktop:p-8">
             <div class="flex items-start justify-between mb-2">
               <h3 class="text-lg font-bold">진순설렁탕</h3>
               <span
@@ -143,7 +156,7 @@
           >
             사진
           </div>
-          <div class="p-8">
+          <div class="p-5 tablet:p-6 desktop:p-8">
             <div class="flex items-start justify-between mb-2">
               <h3 class="text-lg font-bold">스미레 라멘</h3>
               <span
@@ -166,7 +179,7 @@
           >
             사진
           </div>
-          <div class="p-8">
+          <div class="p-5 tablet:p-6 desktop:p-8">
             <div class="flex items-start justify-between mb-2">
               <h3 class="text-lg font-bold">뜨락 파스타</h3>
               <span
@@ -189,7 +202,7 @@
           >
             사진
           </div>
-          <div class="p-8">
+          <div class="p-5 tablet:p-6 desktop:p-8">
             <div class="flex items-start justify-between mb-2">
               <h3 class="text-lg font-bold">마라공방</h3>
               <span
@@ -212,7 +225,7 @@
           >
             사진
           </div>
-          <div class="p-8">
+          <div class="p-5 tablet:p-6 desktop:p-8">
             <div class="flex items-start justify-between mb-2">
               <h3 class="text-lg font-bold">본죽마을</h3>
               <span
@@ -235,7 +248,7 @@
           >
             사진
           </div>
-          <div class="p-8">
+          <div class="p-5 tablet:p-6 desktop:p-8">
             <div class="flex items-start justify-between mb-2">
               <h3 class="text-lg font-bold">카페 온도</h3>
               <span
@@ -255,14 +268,18 @@
 
     <!-- 최근 리뷰 -->
     <section id="reviews" class="bg-white border-y border-ink/10">
-      <div class="max-w-6xl mx-auto px-6 py-20 md:py-24">
+      <div class="max-w-6xl mx-auto px-6 py-12 tablet:py-20 desktop:py-24">
         <div class="mb-12">
-          <h2 class="text-2xl md:text-3xl font-bold mb-2">방금 올라온 리뷰</h2>
+          <h2 class="text-2xl tablet:text-3xl font-bold mb-2">
+            방금 올라온 리뷰
+          </h2>
           <p class="text-ink/60">진짜 직장인들이 남긴 한 줄 후기</p>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div class="p-8 rounded-card border border-ink/10">
+        <div class="grid grid-cols-1 tablet:grid-cols-2 gap-6">
+          <div
+            class="p-5 tablet:p-6 desktop:p-8 rounded-card border border-ink/10"
+          >
             <div class="flex items-center justify-between mb-3">
               <span class="font-bold">진순설렁탕</span>
               <span class="star text-sm">★★★★★</span>
@@ -277,7 +294,9 @@
             </div>
           </div>
 
-          <div class="p-8 rounded-card border border-ink/10">
+          <div
+            class="p-5 tablet:p-6 desktop:p-8 rounded-card border border-ink/10"
+          >
             <div class="flex items-center justify-between mb-3">
               <span class="font-bold">스미레 라멘</span>
               <span class="star text-sm">★★★★☆</span>
@@ -292,7 +311,9 @@
             </div>
           </div>
 
-          <div class="p-8 rounded-card border border-ink/10">
+          <div
+            class="p-5 tablet:p-6 desktop:p-8 rounded-card border border-ink/10"
+          >
             <div class="flex items-center justify-between mb-3">
               <span class="font-bold">마라공방</span>
               <span class="star text-sm">★★★★★</span>
@@ -307,7 +328,9 @@
             </div>
           </div>
 
-          <div class="p-8 rounded-card border border-ink/10">
+          <div
+            class="p-5 tablet:p-6 desktop:p-8 rounded-card border border-ink/10"
+          >
             <div class="flex items-center justify-between mb-3">
               <span class="font-bold">본죽마을</span>
               <span class="star text-sm">★★★★☆</span>
@@ -326,16 +349,21 @@
     </section>
 
     <!-- 서비스 특징 -->
-    <section id="features" class="max-w-6xl mx-auto px-6 py-20 md:py-24">
+    <section
+      id="features"
+      class="max-w-6xl mx-auto px-6 py-12 tablet:py-20 desktop:py-24"
+    >
       <div class="mb-12">
-        <h2 class="text-2xl md:text-3xl font-bold mb-2">
+        <h2 class="text-2xl tablet:text-3xl font-bold mb-2">
           Hidden Gem이 다른 이유
         </h2>
         <p class="text-ink/60">광고 대신 속도와 신뢰를 택했습니다</p>
       </div>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div class="p-8 rounded-card bg-ink/[0.03]">
+      <div
+        class="grid grid-cols-1 tablet:grid-cols-2 desktop:grid-cols-4 gap-6"
+      >
+        <div class="p-5 tablet:p-6 desktop:p-8 rounded-card bg-ink/[0.03]">
           <div
             class="w-10 h-10 rounded-card bg-terracotta/10 flex items-center justify-center mb-6"
           >
@@ -348,7 +376,7 @@
           </p>
         </div>
 
-        <div class="p-8 rounded-card bg-ink/[0.03]">
+        <div class="p-5 tablet:p-6 desktop:p-8 rounded-card bg-ink/[0.03]">
           <div
             class="w-10 h-10 rounded-card bg-terracotta/10 flex items-center justify-center mb-6"
           >
@@ -360,7 +388,7 @@
           </p>
         </div>
 
-        <div class="p-8 rounded-card bg-ink/[0.03]">
+        <div class="p-5 tablet:p-6 desktop:p-8 rounded-card bg-ink/[0.03]">
           <div
             class="w-10 h-10 rounded-card bg-terracotta/10 flex items-center justify-center mb-6"
           >
@@ -373,7 +401,7 @@
           </p>
         </div>
 
-        <div class="p-8 rounded-card bg-ink/[0.03]">
+        <div class="p-5 tablet:p-6 desktop:p-8 rounded-card bg-ink/[0.03]">
           <div
             class="w-10 h-10 rounded-card bg-terracotta/10 flex items-center justify-center mb-6"
           >
@@ -392,7 +420,7 @@
     <footer class="bg-ink text-base">
       <div class="max-w-6xl mx-auto px-6 py-16">
         <div
-          class="flex flex-col md:flex-row md:items-center md:justify-between gap-8 mb-10"
+          class="flex flex-col tablet:flex-row tablet:items-center tablet:justify-between gap-8 mb-10"
         >
           <span class="text-xl font-extrabold">Hidden Gem</span>
           <nav class="flex flex-wrap gap-6 text-sm text-base/70">
@@ -408,7 +436,7 @@
           </nav>
         </div>
         <div
-          class="border-t border-base/10 pt-8 flex flex-col md:flex-row md:items-center md:justify-between gap-2 text-xs text-base/50"
+          class="border-t border-base/10 pt-8 flex flex-col tablet:flex-row tablet:items-center tablet:justify-between gap-2 text-xs text-base/50"
         >
           <p>© 2026 Hidden Gem. 학습용 토이 프로젝트입니다.</p>
           <p>
