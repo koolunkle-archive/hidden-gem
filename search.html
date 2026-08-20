@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>맛집 검색 — Hidden Gem</title>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" />
+  <link rel="stylesheet" as="style" crossorigin
+    href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        screens: {
+          tablet: "768px",
+          desktop: "1440px",
+        },
+        extend: {
+          colors: {
+            base: "#FFFFFF",
+            surface: "#F7F7F7",
+            ink: "#222222",
+            coral: "#FF385C",
+            "coral-dark": "#E61E4D",
+            open: "#00A66C",
+            closed: "#767676",
+          },
+          fontFamily: {
+            sans: ["Pretendard", "sans-serif"],
+          },
+          borderRadius: {
+            card: "12px",
+          },
+        },
+      },
+    };
+  </script>
+  <style>
+    body {
+      font-family: "Pretendard", sans-serif;
+    }
+
+    .card-shadow {
+      box-shadow: 0 2px 8px rgba(34, 34, 34, 0.08);
+      transition: box-shadow 150ms ease-out, transform 150ms ease-out;
+    }
+
+    .card-shadow:hover {
+      box-shadow: 0 12px 28px rgba(34, 34, 34, 0.16);
+      transform: translateY(-4px);
+    }
+
+    .card-photo-zoom {
+      transition: transform 150ms ease-out;
+    }
+
+    .card-shadow:hover .card-photo-zoom {
+      transform: scale(1.03);
+    }
+
+    .btn-pill {
+      transition: background-color 150ms ease-out, transform 150ms ease-out,
+        border-color 150ms ease-out;
+    }
+
+    .btn-pill:active {
+      transform: scale(0.98);
+    }
+
+    #search-keyword-input:focus,
+    #search-category-select:focus {
+      outline: 2px solid #ff385c;
+      outline-offset: 2px;
+    }
+
+    .restaurant-card [data-field="place_name"]:empty,
+    .restaurant-card [data-field="category_name"]:empty,
+    .restaurant-card [data-field="address"]:empty,
+    .restaurant-card [data-field="phone"]:empty,
+    .restaurant-card [data-field="distance"]:empty {
+      display: none;
+    }
+  </style>
+</head>
+
+<body class="bg-base text-ink antialiased">
+  <!-- 헤더 -->
+  <header class="border-b border-ink/10">
+    <div class="max-w-6xl mx-auto px-6 py-5 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-2">
+        <span class="text-xl font-extrabold tracking-tight">Hidden Gem</span>
+      </a>
+      <nav class="hidden tablet:flex items-center gap-8 text-sm font-medium text-ink/70">
+        <a href="index.html#popular" class="hover:text-ink transition-colors">인기 맛집</a>
+        <a href="index.html#reviews" class="hover:text-ink transition-colors">최근 리뷰</a>
+        <a href="index.html#features" class="hover:text-ink transition-colors">서비스 특징</a>
+        <a href="search.html" class="text-ink">맛집 검색</a>
+      </nav>
+      <a href="index.html"
+        class="btn-pill bg-transparent border border-ink/20 text-ink text-sm font-bold px-5 py-2.5 rounded-full hover:border-ink/40">
+        홈으로
+      </a>
+    </div>
+  </header>
+
+  <!-- 맛집 검색 -->
+  <section class="max-w-6xl mx-auto px-6 py-12 tablet:py-20 desktop:py-24">
+    <div class="mb-10 tablet:mb-12">
+      <h1 class="text-2xl tablet:text-3xl font-bold mb-2">맛집 검색</h1>
+      <p class="text-ink/60">
+        회사 근처 맛집을 이름, 메뉴, 카테고리로 직접 찾아보세요
+      </p>
+    </div>
+
+    <!-- 검색 바 -->
+    <form id="search-form"
+      class="flex flex-col tablet:flex-row gap-3 mb-10 tablet:mb-12 bg-surface p-3 rounded-card tablet:rounded-full">
+      <input type="text" id="search-keyword-input" placeholder="식당 이름이나 메뉴로 검색"
+        class="flex-1 bg-white text-ink placeholder:text-ink/40 text-sm font-medium px-5 py-3.5 rounded-full border border-ink/10" />
+      <select id="search-category-select"
+        class="bg-white text-ink text-sm font-medium px-5 py-3.5 rounded-full border border-ink/10 tablet:w-40">
+        <option value="">전체</option>
+        <option value="한식">한식</option>
+        <option value="중식">중식</option>
+        <option value="일식">일식</option>
+        <option value="양식">양식</option>
+        <option value="카페">카페</option>
+      </select>
+      <button type="submit" id="search-submit-btn"
+        class="btn-pill bg-coral text-base font-bold px-8 py-3.5 rounded-full hover:bg-coral-dark whitespace-nowrap">
+        검색
+      </button>
+    </form>
+
+    <!-- 상태 영역 -->
+    <p id="search-loading" hidden class="text-center text-ink/50 text-sm font-medium py-16">
+      검색 중...
+    </p>
+    <p id="search-empty-state" hidden class="text-center text-ink/50 text-sm font-medium py-16">
+      검색 결과가 없습니다. 다른 키워드나 카테고리로 다시 시도해보세요.
+    </p>
+
+    <!-- 결과 그리드 -->
+    <div id="search-results" class="grid grid-cols-1 tablet:grid-cols-2 desktop:grid-cols-3 gap-5 tablet:gap-6">
+      <!-- Feature의 JS가 여기에 카드를 동적으로 채웁니다 -->
+    </div>
+
+    <template id="restaurant-card-template">
+      <article class="restaurant-card bg-white rounded-card card-shadow overflow-hidden">
+        <div class="h-44 overflow-hidden">
+          <div class="card-photo-zoom h-full bg-ink/10 flex items-center justify-center text-ink/30 text-sm">
+            사진
+          </div>
+        </div>
+        <div class="p-5 tablet:p-6">
+          <h3 data-field="place_name" class="text-lg font-bold mb-1"></h3>
+          <p data-field="category_name" class="text-sm text-ink/60 mb-3"></p>
+          <p data-field="address" class="text-sm text-ink/70 leading-relaxed mb-1"></p>
+          <p data-field="phone" class="text-sm text-ink/50 mb-1"></p>
+          <p data-field="distance" class="text-xs text-ink/40 font-medium mb-4"></p>
+          <a data-field="place_url" target="_blank" rel="noopener"
+            class="inline-flex items-center gap-1 text-sm font-bold text-coral hover:text-coral-dark">
+            카카오맵에서 보기
+          </a>
+        </div>
+      </article>
+    </template>
+  </section>
+
+  <!-- 푸터 -->
+  <footer class="bg-ink text-base">
+    <div class="max-w-6xl mx-auto px-6 py-16">
+      <div class="flex flex-col tablet:flex-row tablet:items-center tablet:justify-between gap-8 mb-10">
+        <span class="text-xl font-extrabold">Hidden Gem</span>
+        <nav class="flex flex-wrap gap-6 text-sm text-base/70">
+          <a href="index.html#popular" class="hover:text-base transition-colors">인기 맛집</a>
+          <a href="index.html#reviews" class="hover:text-base transition-colors">최근 리뷰</a>
+          <a href="index.html#features" class="hover:text-base transition-colors">서비스 특징</a>
+          <a href="search.html" class="hover:text-base transition-colors">맛집 검색</a>
+        </nav>
+      </div>
+      <div
+        class="border-t border-base/10 pt-8 flex flex-col tablet:flex-row tablet:items-center tablet:justify-between gap-2 text-xs text-base/50">
+        <p>© 2026 Hidden Gem. 학습용 토이 프로젝트입니다.</p>
+        <p>
+          매일 반복되는 점심 메뉴 고민을 해결해주는 직장인 맛집 리뷰 서비스
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <script defer src="js/kakao-config.js"></script>
+  <script defer src="js/kakao-search.js"></script>
+</body>
+
+</html>
