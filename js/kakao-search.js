@@ -41,7 +41,7 @@
 
       if (!hasValidApiKey()) {
         console.warn(
-          "[kakao-search] KAKAO_REST_API_KEY가 설정되지 않았습니다. js/kakao-config.js에 실제 REST API 키를 입력해주세요.",
+          "[kakao-search] KAKAO_REST_API_KEY가 설정되지 않았습니다. .env 파일에 KAKAO_REST_API_KEY를 입력해주세요(.env.example 참고).",
         );
         showEmptyState("카카오 API 키를 설정해주세요.");
         return;
@@ -177,6 +177,15 @@
       var content = template.content ? template.content.cloneNode(true) : null;
       if (!content) {
         return null;
+      }
+
+      var articleEl = content.querySelector(".restaurant-card");
+      if (articleEl) {
+        // Google 리뷰 조회(js/google-review.js)가 이 카드를 식별하는 데 사용한다.
+        articleEl.dataset.placeId = place.id || "";
+        articleEl.dataset.placeName = place.place_name || "";
+        articleEl.dataset.lat = place.y || "";
+        articleEl.dataset.lng = place.x || "";
       }
 
       setField(content, "place_name", place.place_name || "");

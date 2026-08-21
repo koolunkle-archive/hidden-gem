@@ -1,0 +1,12 @@
+{
+  "name": "hidden-gem",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Hidden Gem - 점심 맛집 리뷰 서비스 (토이 프로젝트)",
+  "scripts": {
+    "dev": "node local-server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
