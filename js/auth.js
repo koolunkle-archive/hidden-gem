@@ -220,6 +220,11 @@
       onChange: function (callback) {
         if (typeof callback === "function") listeners.push(callback);
       },
+      // "맛집 담기" 등 인증이 필요한 DB 접근 기능이 별도의 Supabase 클라이언트를
+      // 새로 만들지 않고 같은 세션(localStorage)을 공유하는 이 클라이언트를 재사용하게 한다.
+      getClient: function () {
+        return supabaseClient;
+      },
     };
   }
 

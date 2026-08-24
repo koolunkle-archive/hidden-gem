@@ -1,7 +1,11 @@
-// Hidden Gem - 구글 리뷰 보기 기능.
-// search.html의 검색 결과 카드(.restaurant-card)를 클릭하면 /api/google-review를 호출해
-// 해당 가게의 구글 평점/리뷰 요약을 모달로 보여준다.
-// 한 번 조회한 가게는 localStorage에 캐싱해 재클릭 시 재요청하지 않는다.
+// Hidden Gem - "맛집 주머니"(my-page.html) 카드의 "구글 리뷰 보기" 기능.
+// js/google-review.js(search.html)와 같은 UI(#review-modal-backdrop)·같은 /api/google-review
+// 호출·같은 localStorage 캐시 키(hiddenGem:googleReview:v1:)를 그대로 재사용하지만,
+// 이 페이지의 카드는 클릭 대상이 카드 전체가 아니라 ".google-review-btn" 버튼이라 별도
+// 파일로 둔다(느슨한 결합 — js/my-page.js가 카드에 심어둔 dataset만 DOM으로 읽어간다).
+// 캐시가 search.html과 공유되므로 같은 가게를 다른 페이지에서 봤다면 재요청하지 않는다.
+// hiddengem:review-modal-opening / hiddengem:google-review-rendered 이벤트를 그대로 쏘므로
+// js/google-review-analysis.js(AI 리뷰 분석)도 수정 없이 이 페이지에서 함께 동작한다.
 
 (function () {
   "use strict";
@@ -10,7 +14,7 @@
   var API_ENDPOINT = "/api/google-review";
 
   function init() {
-    var resultsEl = document.getElementById("search-results");
+    var listEl = document.getElementById("saved-places-list");
     var backdrop = document.getElementById("review-modal-backdrop");
     var closeBtn = document.getElementById("review-modal-close");
     var titleEl = document.getElementById("review-modal-title");
@@ -19,41 +23,26 @@
     var contentEl = document.getElementById("review-modal-content");
     var ratingEl = document.getElementById("review-modal-rating");
     var countEl = document.getElementById("review-modal-count");
-    var listEl = document.getElementById("review-modal-list");
+    var listElReviews = document.getElementById("review-modal-list");
     var moreLinkEl = document.getElementById("review-modal-more-link");
     var itemTemplate = document.getElementById("google-review-item-template");
 
-    // 이 페이지에 검색 결과/모달 요소가 없으면 대상 페이지가 아니므로 조용히 종료.
-    if (!resultsEl || !backdrop || !itemTemplate) {
+    // 이 페이지에 목록/모달 요소가 없으면 대상 페이지가 아니므로 조용히 종료.
+    if (!listEl || !backdrop || !itemTemplate) {
       return;
     }
 
     var currentRequestToken = 0;
 
-    resultsEl.addEventListener("click", function (e) {
-      // 카카오맵 링크 클릭이나 담기 버튼 클릭은 모달을 열지 않는다.
-      if (e.target.closest("a") || e.target.closest(".save-btn")) {
+    listEl.addEventListener("click", function (e) {
+      var btn = e.target.closest(".google-review-btn");
+      if (!btn) {
         return;
       }
-      var card = e.target.closest(".restaurant-card");
+      var card = btn.closest(".saved-place-card");
       if (card) {
         openReviewModal(card);
       }
-    });
-
-    resultsEl.addEventListener("keydown", function (e) {
-      if (e.key !== "Enter" && e.key !== " ") {
-        return;
-      }
-      if (e.target.closest(".save-btn")) {
-        return;
-      }
-      var card = e.target.closest(".restaurant-card");
-      if (!card) {
-        return;
-      }
-      e.preventDefault();
-      openReviewModal(card);
     });
 
     if (closeBtn) {
@@ -88,8 +77,6 @@
       backdrop.hidden = false;
       showState("loading");
 
-      // AI 리뷰 분석(js/google-review-analysis.js)이 새 가게로 전환됐음을 알고
-      // 자신의 상태를 리셋할 수 있게 알린다.
       document.dispatchEvent(
         new CustomEvent("hiddengem:review-modal-opening", {
           detail: { placeId: placeId },
@@ -141,7 +128,7 @@
           if (token !== currentRequestToken) {
             return;
           }
-          console.error("[google-review] 리뷰를 불러오지 못했습니다.", err);
+          console.error("[my-page-review] 리뷰를 불러오지 못했습니다.", err);
           showState(
             "error",
             "리뷰를 불러오지 못했습니다. 잠시 후 다시 시도해주세요.",
@@ -151,7 +138,6 @@
 
     function renderResult(data, placeId) {
       if (!data || !data.found) {
-        // 못 찾은 경우에도 AI 분석 스크립트가 자신을 숨길 수 있게 알린다.
         document.dispatchEvent(
           new CustomEvent("hiddengem:google-review-rendered", {
             detail: {
@@ -173,13 +159,13 @@
         typeof data.rating === "number" ? data.rating.toFixed(1) : "평점 없음";
       countEl.textContent = "리뷰 " + (data.reviewCount || 0) + "개";
 
-      listEl.innerHTML = "";
+      listElReviews.innerHTML = "";
       var reviews = Array.isArray(data.reviews) ? data.reviews : [];
       if (!reviews.length) {
         var emptyLi = document.createElement("li");
         emptyLi.className = "text-sm text-ink/50";
         emptyLi.textContent = "등록된 리뷰 내용이 없습니다.";
-        listEl.appendChild(emptyLi);
+        listElReviews.appendChild(emptyLi);
       } else {
         reviews.forEach(function (review) {
           var node = itemTemplate.content.cloneNode(true);
@@ -191,7 +177,7 @@
           );
           setText(node, "date", review.relativeTime || "");
           setText(node, "text", review.text || "");
-          listEl.appendChild(node);
+          listElReviews.appendChild(node);
         });
       }
 
@@ -202,13 +188,8 @@
         moreLinkEl.hidden = true;
       }
 
-      // #review-ai-section은 review-modal-content의 자손이므로, AI 분석 스크립트가
-      // (캐시 적중 시 동기적으로) 워드클라우드 크기를 재기 전에 이 컨테이너부터 먼저
-      // 화면에 보이게 해야 한다. 순서가 바뀌면 숨겨진 상태에서 span 크기가 0으로
-      // 측정되어 단어들이 한 지점에 뭉쳐 보이는 버그가 생긴다.
       showState("content");
 
-      // AI 리뷰 분석 스크립트가 이 결과를 이어받아 분석을 시작(또는 자신을 숨김)할 수 있게 알린다.
       document.dispatchEvent(
         new CustomEvent("hiddengem:google-review-rendered", {
           detail: {
