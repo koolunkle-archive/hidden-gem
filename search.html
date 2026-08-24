@@ -71,22 +71,55 @@
     }
 
     #search-keyword-input:focus,
-    #search-category-select:focus,
     .restaurant-card:focus-visible {
       outline: 2px solid #ff385c;
       outline-offset: 2px;
     }
 
-    /* 브라우저 기본 select 화살표를 지우고 나머지 pill 컨트롤들과 톤이 맞는
-       코랄 톤 커스텀 화살표로 교체한다(appearance-none만으로는 화살표가 안 지워지는
-       브라우저가 있어 -webkit-/-moz- 접두사도 함께 지정). */
-    #search-category-select {
-      -webkit-appearance: none;
-      -moz-appearance: none;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23222222' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-position: right 18px center;
-      background-size: 14px;
+    /* 카테고리 드롭다운(#search-category-dropdown) — 네이티브 select의 옵션 목록은
+       브라우저마다 제각각인 OS 기본 팝업으로 렌더링되어 나머지 pill/카드 UI와
+       톤이 어긋나므로, 버튼 + 커스텀 리스트박스로 직접 구현하고 실제 값 저장용
+       select(#search-category-select)는 화면에서 숨긴 채 kakao-search.js가 그대로
+       읽어가게 한다(느슨한 결합 — 폼 제출 로직은 손대지 않음). */
+    .category-dropdown-chevron {
+      transition: transform 150ms ease-out;
+    }
+
+    .category-dropdown-trigger[aria-expanded="true"] .category-dropdown-chevron {
+      transform: rotate(180deg);
+    }
+
+    .category-dropdown-panel {
+      box-shadow: 0 12px 28px rgba(34, 34, 34, 0.16);
+    }
+
+    .category-dropdown-option {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      width: 100%;
+      text-align: left;
+      transition: background-color 150ms ease-out;
+    }
+
+    .category-dropdown-option:hover,
+    .category-dropdown-option:focus-visible {
+      background-color: #f7f7f7;
+      outline: none;
+    }
+
+    .category-dropdown-option[aria-selected="true"] {
+      color: #ff385c;
+      font-weight: 700;
+    }
+
+    .category-dropdown-option .category-dropdown-check {
+      visibility: hidden;
+    }
+
+    .category-dropdown-option[aria-selected="true"] .category-dropdown-check {
+      visibility: visible;
     }
 
     .restaurant-card {
@@ -230,15 +263,76 @@
       class="flex flex-col tablet:flex-row gap-3 mb-10 tablet:mb-12 bg-surface p-3 rounded-card tablet:rounded-full">
       <input type="text" id="search-keyword-input" placeholder="식당 이름이나 메뉴로 검색"
         class="flex-1 bg-white text-ink placeholder:text-ink/40 text-sm font-medium px-5 py-3.5 rounded-full border border-ink/10" />
-      <select id="search-category-select"
-        class="appearance-none bg-white text-ink text-sm font-medium pl-5 pr-11 py-3.5 rounded-full border border-ink/10 tablet:w-40 cursor-pointer">
-        <option value="">전체</option>
-        <option value="한식">한식</option>
-        <option value="중식">중식</option>
-        <option value="일식">일식</option>
-        <option value="양식">양식</option>
-        <option value="카페">카페</option>
-      </select>
+      <div id="search-category-dropdown" class="relative tablet:w-40">
+        <button type="button" id="search-category-trigger"
+          class="category-dropdown-trigger w-full flex items-center justify-between gap-2 bg-white text-ink text-sm font-medium pl-5 pr-4 py-3.5 rounded-full border border-ink/10 cursor-pointer hover:border-ink/25 transition-colors"
+          aria-haspopup="listbox" aria-expanded="false">
+          <span id="search-category-trigger-label">전체</span>
+          <svg class="category-dropdown-chevron" aria-hidden="true" width="14" height="14" viewBox="0 0 24 24"
+            fill="none" stroke="#ff385c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 12 15 18 9" />
+          </svg>
+        </button>
+        <div id="search-category-listbox" role="listbox" aria-label="카테고리" hidden
+          class="category-dropdown-panel absolute left-0 right-0 tablet:w-48 mt-2 bg-white rounded-card border border-ink/10 py-2 z-20">
+          <button type="button" role="option" aria-selected="true" data-value=""
+            class="category-dropdown-option px-4 py-2.5 text-sm">
+            전체
+            <svg class="category-dropdown-check" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24"
+              fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12" />
+            </svg>
+          </button>
+          <button type="button" role="option" aria-selected="false" data-value="한식"
+            class="category-dropdown-option px-4 py-2.5 text-sm">
+            한식
+            <svg class="category-dropdown-check" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24"
+              fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12" />
+            </svg>
+          </button>
+          <button type="button" role="option" aria-selected="false" data-value="중식"
+            class="category-dropdown-option px-4 py-2.5 text-sm">
+            중식
+            <svg class="category-dropdown-check" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24"
+              fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12" />
+            </svg>
+          </button>
+          <button type="button" role="option" aria-selected="false" data-value="일식"
+            class="category-dropdown-option px-4 py-2.5 text-sm">
+            일식
+            <svg class="category-dropdown-check" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24"
+              fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12" />
+            </svg>
+          </button>
+          <button type="button" role="option" aria-selected="false" data-value="양식"
+            class="category-dropdown-option px-4 py-2.5 text-sm">
+            양식
+            <svg class="category-dropdown-check" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24"
+              fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12" />
+            </svg>
+          </button>
+          <button type="button" role="option" aria-selected="false" data-value="카페"
+            class="category-dropdown-option px-4 py-2.5 text-sm">
+            카페
+            <svg class="category-dropdown-check" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24"
+              fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12" />
+            </svg>
+          </button>
+        </div>
+        <select id="search-category-select" hidden aria-hidden="true" tabindex="-1">
+          <option value="">전체</option>
+          <option value="한식">한식</option>
+          <option value="중식">중식</option>
+          <option value="일식">일식</option>
+          <option value="양식">양식</option>
+          <option value="카페">카페</option>
+        </select>
+      </div>
       <button type="submit" id="search-submit-btn"
         class="btn-pill bg-coral text-base font-bold px-8 py-3.5 rounded-full hover:bg-coral-dark whitespace-nowrap">
         검색
@@ -431,6 +525,7 @@
 
   <script defer src="/api/kakao-config"></script>
   <script defer src="js/kakao-search.js"></script>
+  <script defer src="js/category-dropdown.js"></script>
   <script defer src="js/google-review.js"></script>
   <script defer src="js/google-review-analysis.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
