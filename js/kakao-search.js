@@ -190,6 +190,7 @@
 
       setField(content, "place_name", place.place_name || "");
       setField(content, "category_name", place.category_name || "");
+      setPhoto(content, place);
 
       var address = place.road_address_name || place.address_name || "";
       setField(content, "address", address);
@@ -235,6 +236,19 @@
       if (el) {
         el.textContent = text;
       }
+    }
+
+    // 카드 사진(구글 Place Photos) — js/place-photo.js의 공용 헬퍼(window.HiddenGemPlacePhoto)
+    // 사용. 여러 카드 목록(검색 결과/나를 위한 추천/인기 맛집)이 이 헬퍼를 공유한다.
+    function setPhoto(root, place) {
+      if (!window.HiddenGemPlacePhoto) {
+        return;
+      }
+      window.HiddenGemPlacePhoto.attach(root, {
+        name: place.place_name,
+        lat: place.y,
+        lng: place.x,
+      });
     }
 
     function clearResults() {

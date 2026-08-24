@@ -49,14 +49,7 @@ async function safeJson(res) {
   }
 }
 
-// name/lat/lng으로 구글맵에서 가게를 찾아 정리된 리뷰 요약을 반환한다.
-// 반경 150m 이내에서 못 찾으면 { found: false }를 반환한다.
-async function findNearbyPlaceReviews(params) {
-  var apiKey = params.apiKey;
-  var name = params.name;
-  var lat = params.lat;
-  var lng = params.lng;
-
+function validateParams(apiKey, name, lat, lng) {
   if (!apiKey) {
     throw makeError(
       "GOOGLE_PLACES_API_KEY가 설정되지 않았습니다. 서버 환경변수를 확인해주세요.",
@@ -74,6 +67,39 @@ async function findNearbyPlaceReviews(params) {
   ) {
     throw makeError("유효한 좌표(lat, lng)가 필요합니다.", 400);
   }
+}
+
+// 검색 결과는 관련도순으로 오므로, 그중 반경 150m 이내인 첫 후보를 채택한다.
+// (동일한 이름의 다른 지점과 혼동하지 않기 위한 좌표 검증)
+function pickNearbyMatch(searchData, lat, lng) {
+  var candidates =
+    searchData && Array.isArray(searchData.places) ? searchData.places : [];
+  for (var i = 0; i < candidates.length; i++) {
+    var place = candidates[i];
+    if (!place.location) continue;
+    var d = distanceMeters(
+      lat,
+      lng,
+      place.location.latitude,
+      place.location.longitude,
+    );
+    if (d <= MAX_DISTANCE_METERS) {
+      return place;
+    }
+  }
+  return null;
+}
+
+// name/lat/lng으로 구글맵에서 가게를 찾아 place id를 반환한다(못 찾으면 null).
+// findNearbyPlaceReviews와 api/_lib/google-place-photo.js가 함께 쓰는 첫 단계 —
+// "이름 텍스트 검색 → 반경 150m 이내 후보로 검증" 로직을 중복시키지 않기 위함.
+async function findNearbyPlaceId(params) {
+  var apiKey = params.apiKey;
+  var name = params.name;
+  var lat = params.lat;
+  var lng = params.lng;
+
+  validateParams(apiKey, name, lat, lng);
 
   var searchRes = await fetch(TEXT_SEARCH_URL, {
     method: "POST",
@@ -107,35 +133,25 @@ async function findNearbyPlaceReviews(params) {
   }
 
   var searchData = await searchRes.json();
-  var candidates =
-    searchData && Array.isArray(searchData.places) ? searchData.places : [];
+  var match = pickNearbyMatch(searchData, lat, lng);
+  return match ? match.id : null;
+}
 
-  // 검색 결과는 관련도순으로 오므로, 그중 반경 150m 이내인 첫 후보를 채택한다.
-  // (동일한 이름의 다른 지점과 혼동하지 않기 위한 좌표 검증)
-  var match = null;
-  for (var i = 0; i < candidates.length; i++) {
-    var place = candidates[i];
-    if (!place.location) continue;
-    var d = distanceMeters(
-      lat,
-      lng,
-      place.location.latitude,
-      place.location.longitude,
-    );
-    if (d <= MAX_DISTANCE_METERS) {
-      match = place;
-      break;
-    }
-  }
+// name/lat/lng으로 구글맵에서 가게를 찾아 정리된 리뷰 요약을 반환한다.
+// 반경 150m 이내에서 못 찾으면 { found: false }를 반환한다.
+async function findNearbyPlaceReviews(params) {
+  var apiKey = params.apiKey;
+  var name = params.name;
 
-  if (!match) {
+  var placeId = await findNearbyPlaceId(params);
+  if (!placeId) {
     return { found: false };
   }
 
   var detailsRes = await fetch(
     PLACE_DETAILS_BASE_URL +
       "/" +
-      encodeURIComponent(match.id) +
+      encodeURIComponent(placeId) +
       "?languageCode=ko",
     {
       headers: {
@@ -185,6 +201,9 @@ async function findNearbyPlaceReviews(params) {
 
 module.exports = {
   findNearbyPlaceReviews: findNearbyPlaceReviews,
+  findNearbyPlaceId: findNearbyPlaceId,
   distanceMeters: distanceMeters,
   MAX_DISTANCE_METERS: MAX_DISTANCE_METERS,
+  makeError: makeError,
+  safeJson: safeJson,
 };

@@ -292,7 +292,9 @@
     <template id="recommendation-card-template">
       <article class="bg-white rounded-card card-shadow overflow-hidden">
         <div class="h-32 overflow-hidden">
-          <div class="h-full bg-ink/10 flex items-center justify-center text-ink/30 text-sm">
+          <img data-field="photo" alt="" class="card-photo-zoom hidden h-full w-full object-cover" />
+          <div data-field="photo-placeholder"
+            class="card-photo-zoom h-full bg-ink/10 flex items-center justify-center text-ink/30 text-sm">
             사진
           </div>
         </div>
@@ -336,7 +338,9 @@
     <template id="popular-place-card-template">
       <article class="bg-white rounded-card card-shadow overflow-hidden">
         <div class="relative h-44 overflow-hidden">
-          <div class="h-full bg-ink/10 flex items-center justify-center text-ink/30 text-sm">
+          <img data-field="photo" alt="" class="card-photo-zoom hidden h-full w-full object-cover" />
+          <div data-field="photo-placeholder"
+            class="card-photo-zoom h-full bg-ink/10 flex items-center justify-center text-ink/30 text-sm">
             사진
           </div>
           <span data-field="rank"
@@ -420,6 +424,7 @@
   </footer>
 
   <script defer src="/api/kakao-config"></script>
+  <script defer src="js/place-photo.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script defer src="/api/supabase-config"></script>
   <script defer src="js/auth.js"></script>

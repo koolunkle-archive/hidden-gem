@@ -124,6 +124,13 @@
         "address",
         place.road_address_name || place.address_name || "",
       );
+      if (window.HiddenGemPlacePhoto) {
+        window.HiddenGemPlacePhoto.attach(content, {
+          name: place.place_name,
+          lat: place.y,
+          lng: place.x,
+        });
+      }
 
       var linkEl = content.querySelector('[data-field="place_url"]');
       if (linkEl) {

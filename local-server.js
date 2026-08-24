@@ -17,6 +17,7 @@ loadDotEnvFile();
 
 var findNearbyPlaceReviews =
   require("./api/_lib/google-places").findNearbyPlaceReviews;
+var findPlacePhoto = require("./api/_lib/google-place-photo").findPlacePhoto;
 var buildKakaoConfigScript =
   require("./api/_lib/kakao-config").buildKakaoConfigScript;
 var analyzeReviews =
@@ -51,6 +52,11 @@ var server = http.createServer(function (req, res) {
 
   if (requestUrl.pathname === "/api/google-review") {
     handleGoogleReviewRequest(req, requestUrl, res);
+    return;
+  }
+
+  if (requestUrl.pathname === "/api/place-photo") {
+    handlePlacePhotoRequest(req, requestUrl, res);
     return;
   }
 
@@ -110,6 +116,41 @@ function handleGoogleReviewRequest(req, requestUrl, res) {
   })
     .then(function (result) {
       sendJson(res, 200, result);
+    })
+    .catch(function (err) {
+      sendJson(res, (err && err.statusCode) || 500, {
+        error: (err && err.message) || "알 수 없는 오류가 발생했습니다.",
+      });
+    });
+}
+
+// <img src="/api/place-photo?...">로 그대로 쓸 수 있도록, 찾은 사진의 실제 URL로
+// 302 리다이렉트한다(api/place-photo.js의 Vercel 버전과 동일한 동작).
+function handlePlacePhotoRequest(req, requestUrl, res) {
+  if (req.method !== "GET") {
+    sendJson(res, 405, { error: "GET 요청만 지원합니다." });
+    return;
+  }
+
+  var name = requestUrl.searchParams.get("name") || "";
+  var lat = Number(requestUrl.searchParams.get("lat"));
+  var lng = Number(requestUrl.searchParams.get("lng"));
+  var maxWidthPx = requestUrl.searchParams.get("maxWidth");
+
+  findPlacePhoto({
+    apiKey: process.env.GOOGLE_PLACES_API_KEY,
+    name: name,
+    lat: lat,
+    lng: lng,
+    maxWidthPx: maxWidthPx,
+  })
+    .then(function (result) {
+      if (!result.found) {
+        sendJson(res, 404, { error: "사진을 찾지 못했습니다." });
+        return;
+      }
+      res.writeHead(302, { Location: result.photoUri });
+      res.end();
     })
     .catch(function (err) {
       sendJson(res, (err && err.statusCode) || 500, {

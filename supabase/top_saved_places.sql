@@ -6,6 +6,8 @@
 -- 절대 결과에 포함되지 않는다. RLS 자체는 saved_places 테이블에 그대로 켜져 있다.
 -- place_id/category_name/address는 인기 랭킹 카드뿐 아니라 "오늘의 추천"(js/today-pick.js)이
 -- 가중치 랜덤으로 뽑은 가게를 카카오맵으로 바로 연결하는 데도 쓰인다.
+-- x/y(카카오 좌표)는 js/popular-places.js가 카드 사진(구글 Place Photos, js/place-photo.js)을
+-- 붙이는 데 쓴다 — /api/place-photo가 이름+좌표로 구글 장소를 찾기 때문에 좌표가 꼭 필요하다.
 --
 -- 이미 이 함수를 만들어 두었다면 반환 컬럼(타입)이 바뀌어서 create or replace만으로는
 -- 안 되므로, 먼저 기존 함수를 지우고 다시 만든다 — 이 파일은 여러 번 실행해도 안전하다.
@@ -19,6 +21,8 @@ returns table (
   place_name text,
   category_name text,
   address text,
+  x double precision,
+  y double precision,
   save_count bigint
 )
 language sql
@@ -26,9 +30,9 @@ security definer
 set search_path = public
 stable
 as $$
-  select sp.place_id, sp.place_name, sp.category_name, sp.address, count(*)::bigint as save_count
+  select sp.place_id, sp.place_name, sp.category_name, sp.address, sp.x, sp.y, count(*)::bigint as save_count
   from public.saved_places sp
-  group by sp.place_id, sp.place_name, sp.category_name, sp.address
+  group by sp.place_id, sp.place_name, sp.category_name, sp.address, sp.x, sp.y
   order by save_count desc, sp.place_name asc
   limit limit_count;
 $$;

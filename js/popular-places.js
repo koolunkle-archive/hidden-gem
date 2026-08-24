@@ -78,6 +78,13 @@
         "save_count",
         String(row.save_count != null ? row.save_count : 0),
       );
+      if (window.HiddenGemPlacePhoto) {
+        window.HiddenGemPlacePhoto.attach(content, {
+          name: row.place_name,
+          lat: row.y,
+          lng: row.x,
+        });
+      }
 
       var rankEl = content.querySelector('[data-field="rank"]');
       if (rankEl) {
