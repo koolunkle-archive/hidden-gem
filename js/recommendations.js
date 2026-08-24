@@ -24,9 +24,6 @@
     var subtitleEl = document.getElementById("recommendations-subtitle");
     var listEl = document.getElementById("recommendations-list");
     var template = document.getElementById("recommendation-card-template");
-    // 헤더 퀵점프 칩 바(js/quick-nav.js)의 "나를 위한 추천" 칩 — 섹션이 없을 땐
-    // 가리킬 곳도 없으므로 섹션과 항상 같이 보이고 같이 숨는다.
-    var navChipEl = document.getElementById("quick-nav-recommendations");
 
     if (!window.HiddenGemAuth) {
       return;
@@ -49,9 +46,6 @@
 
     function setSectionHidden(hidden) {
       sectionEl.hidden = hidden;
-      if (navChipEl) {
-        navChipEl.hidden = hidden;
-      }
     }
 
     function load() {
