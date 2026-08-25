@@ -1,10 +1,6 @@
-// Hidden Gem - 맛집 "담기" 기능 (Supabase saved_places 테이블 기반).
-// search.html의 검색 결과 카드(.restaurant-card)마다 있는 .save-btn을 눌러
-// 담기/취소를 토글한다. window.HiddenGemAuth(js/auth.js)가 만든 Supabase 클라이언트를
-// 그대로 재사용해 같은 로그인 세션으로 요청한다.
-//
-// user_id는 saved_places 테이블의 컬럼 기본값(auth.uid())이 채우므로 여기서는 절대
-// 보내지 않고, 조회/삭제도 RLS("자기 것만")에 맡기고 user_id로 직접 필터링하지 않는다.
+// Hidden Gem - 맛집 "담기" 기능(saved_places). search.html 카드의 .save-btn으로
+// 담기/취소를 토글한다. user_id는 컬럼 기본값(auth.uid())이 채우므로 직접 다루지 않고
+// 조회/삭제도 RLS("자기 것만")에 맡긴다.
 
 (function () {
   "use strict";
@@ -89,8 +85,7 @@
           btn.disabled = false;
           var error = result && result.error;
           if (error) {
-            // 이미 담겨 있는데(다른 탭 등) 다시 담기를 시도한 경우 — UNIQUE 위반은
-            // 실패가 아니라 "이미 담김"으로 취급해 화면 상태만 맞춰준다.
+            // UNIQUE 위반(다른 탭 등에서 이미 담음)은 실패가 아니라 "이미 담김"으로 취급.
             if (!wasSaved && error.code === "23505") {
               setSaved(card, true);
               return;

@@ -1,19 +1,6 @@
-// Hidden Gem - "맛집 주머니"(my-page.html) 기능.
-// 로그인한 사용자가 담은 가게 목록을 saved_places 테이블에서 최신순으로 불러와
-// 카드로 보여주고, 삭제(X)를 누르면 목록과 테이블에서 함께 제거한다.
-// js/auth.js가 만든 Supabase 클라이언트를 그대로 재사용해 같은 로그인 세션으로 요청하며,
-// user_id로 직접 필터링하지 않고 RLS("자기 것만")에 전적으로 위임한다.
-//
-// 지도 링크는 place_id 기반 카카오맵으로 통일한다(place_name+address로 추측 검색하는
-// 구글맵보다 정확함) — 구글은 리뷰를 보는 용도로만 쓴다(js/my-page-review.js).
-//
-// 카드 article에 place_id/place_name/lat/lng를 dataset으로 심어 두는데, 이는
-// js/my-page-review.js가 "구글 리뷰 보기" 클릭을 처리할 때 읽어간다
-// (js/kakao-search.js가 search.html 카드에 하는 것과 동일한, DOM으로만 연결되는 패턴).
-//
-// 각 카드의 "다녀왔어요" 버튼은 만족/불만족 + 한줄평을 visit_reviews 테이블에 남긴다.
-// 여기 남긴 후기는 메인 화면의 "방금 다녀왔어요"(js/recent-reviews.js, recent_visit_reviews
-// 집계 함수)에 전체 이용자 것과 함께 모여 보인다.
+// Hidden Gem - 맛집 주머니(my-page.html): saved_places 조회/삭제, 방문 후기(visit_reviews) 작성.
+// RLS로 본인 데이터만 다루며 user_id는 직접 사용하지 않는다.
+// 카드에 place_id/place_name/lat/lng를 dataset으로 심어 js/reviews/review-modal.js가 읽어간다.
 
 (function () {
   "use strict";
@@ -192,9 +179,8 @@
       }
     });
 
-    // js/auth.js의 초기 세션 조회는 비동기라, 이 리스너가 등록되기 전에 이미
-    // hiddengem:auth-changed가 한 번 발생해 있을 수 있다 — 놓치면 로그인 상태여도
-    // "불러오는 중"에서 멈추므로, 등록 시점의 현재 상태를 한 번 더 확인해 둔다.
+    // auth.js의 초기 세션 조회는 비동기라 리스너 등록 전에 auth-changed가 이미
+    // 발생했을 수 있다 — 놓치면 "불러오는 중"에서 멈추므로 현재 상태를 한 번 더 확인.
     if (window.HiddenGemAuth.getUser()) {
       load();
     } else {
@@ -244,8 +230,7 @@
 
       var articleEl = content.querySelector(".saved-place-card");
       if (articleEl) {
-        // js/my-page-review.js가 "구글 리뷰 보기" 클릭을 여기서 읽어간다
-        // (js/kakao-search.js가 search.html 카드에 심어두는 것과 같은 패턴).
+        // review-modal.js가 "구글 리뷰 보기" 클릭 시 읽어간다.
         articleEl.dataset.placeId = row.place_id || "";
         articleEl.dataset.placeName = row.place_name || "";
         articleEl.dataset.lat = row.y != null ? String(row.y) : "";
@@ -256,6 +241,14 @@
       setText(content, "category_name", row.category_name || "");
       setText(content, "address", row.address || "");
       setText(content, "created_at", formatDate(row.created_at));
+
+      if (window.HiddenGemPlacePhoto) {
+        window.HiddenGemPlacePhoto.attach(content, {
+          name: row.place_name,
+          lat: row.y,
+          lng: row.x,
+        });
+      }
 
       var mapLinkEl = content.querySelector('[data-field="map_link"]');
       if (mapLinkEl) {

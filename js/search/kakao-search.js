@@ -1,6 +1,5 @@
-// Hidden Gem - 카카오 로컬(Local) API를 이용한 맛집 검색 기능.
-// search.html의 고정 계약(폼/셀렉트/버튼/로딩/빈결과/결과컨테이너/카드 템플릿) 위에서 동작한다.
-// search.html이 아직 없거나 필요한 요소가 없으면 조용히 종료한다(콘솔 에러로 페이지를 깨뜨리지 않음).
+// Hidden Gem - 카카오 로컬(Local) API 맛집 검색.
+// search.html의 폼/셀렉트/버튼/카드 템플릿 계약 위에서 동작한다.
 
 (function () {
   "use strict";
@@ -181,7 +180,7 @@
 
       var articleEl = content.querySelector(".restaurant-card");
       if (articleEl) {
-        // Google 리뷰 조회(js/google-review.js)가 이 카드를 식별하는 데 사용한다.
+        // Google 리뷰 조회(js/reviews/review-modal.js)가 이 카드를 식별하는 데 사용한다.
         articleEl.dataset.placeId = place.id || "";
         articleEl.dataset.placeName = place.place_name || "";
         articleEl.dataset.lat = place.y || "";
@@ -238,7 +237,7 @@
       }
     }
 
-    // 카드 사진(구글 Place Photos) — js/place-photo.js의 공용 헬퍼(window.HiddenGemPlacePhoto)
+    // 카드 사진(구글 Place Photos) — js/shared/place-photo.js의 공용 헬퍼(window.HiddenGemPlacePhoto)
     // 사용. 여러 카드 목록(검색 결과/나를 위한 추천/인기 맛집)이 이 헬퍼를 공유한다.
     function setPhoto(root, place) {
       if (!window.HiddenGemPlacePhoto) {

@@ -1,11 +1,8 @@
 // Hidden Gem 로컬 개발 서버.
-// 정적 파일(index.html, search.html, js/*)을 서빙하면서 동시에 /api/google-review를
-// Vercel 서버리스 함수와 동일한 로직(api/_lib/google-places.js)으로 처리한다.
-// 별도 패키지 설치 없이 Node 내장 모듈 + 전역 fetch(Node 18+)만 사용한다.
+// 정적 파일을 서빙하면서 /api/* 요청을 Vercel 서버리스 함수와 동일한 로직(api/_lib/*)으로
+// 처리한다. 별도 패키지 설치 없이 Node 내장 모듈 + 전역 fetch(Node 18+)만 사용한다.
 //
-// 실행: node local-server.js
-// 사전 준비: 프로젝트 루트에 .env 파일을 만들고 GOOGLE_PLACES_API_KEY=실제키 를 입력
-//           (.env.example 참고)
+// 실행: node server.js (사전 준비: .env.example을 복사한 .env 파일 필요)
 "use strict";
 
 var http = require("http");

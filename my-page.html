@@ -62,8 +62,7 @@
       transform: scale(0.98);
     }
 
-    /* Tailwind의 `flex`/`grid` 유틸리티와 `hidden` 속성은 동일한 우선순위라 공존 시
-       유틸리티가 이길 수 있으므로, id 선택자로 확실히 감춘다. */
+    /* `hidden`과 Tailwind `flex`/`grid`는 특이도가 동점이라 id 선택자로 확실히 감춘다(CLAUDE.md 참고). */
     #auth-modal-backdrop[hidden],
     #auth-user-status[hidden],
     #saved-places-list[hidden],
@@ -222,28 +221,37 @@
     </div>
 
     <template id="saved-place-card-template">
-      <article class="saved-place-card relative bg-white rounded-card card-shadow overflow-hidden p-5 tablet:p-6">
-        <button type="button" class="saved-place-delete-btn absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center text-ink/40 hover:bg-surface hover:text-ink text-lg leading-none"
-          aria-label="삭제">
-          &times;
-        </button>
-        <h3 data-field="place_name" class="text-lg font-bold mb-1 pr-8"></h3>
-        <p data-field="category_name" class="text-sm text-ink/60 mb-3"></p>
-        <p data-field="address" class="text-sm text-ink/70 leading-relaxed mb-4"></p>
-        <div class="flex items-center justify-between mb-4">
-          <span data-field="created_at" class="text-xs text-ink/40 font-medium"></span>
-          <a data-field="map_link" target="_blank" rel="noopener"
-            class="inline-flex items-center gap-1 text-sm font-bold text-coral hover:text-coral-dark">
-            카카오맵에서 보기
-          </a>
+      <article class="saved-place-card relative bg-white rounded-card card-shadow overflow-hidden">
+        <div class="h-44 overflow-hidden">
+          <img data-field="photo" alt="" class="hidden h-full w-full object-cover" />
+          <div data-field="photo-placeholder"
+            class="h-full bg-ink/10 flex items-center justify-center text-ink/30 text-sm">
+            사진
+          </div>
         </div>
-        <div class="flex gap-2">
-          <button type="button" class="google-review-btn btn-pill flex-1 h-11 rounded-full border border-ink/20 text-ink text-sm font-bold hover:border-ink/40">
-            구글 리뷰 보기
+        <div class="relative p-5 tablet:p-6">
+          <button type="button" class="saved-place-delete-btn absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center text-ink/40 hover:bg-surface hover:text-ink text-lg leading-none"
+            aria-label="삭제">
+            &times;
           </button>
-          <button type="button" class="visit-review-btn btn-pill flex-1 h-11 rounded-full border border-ink/20 text-ink text-sm font-bold hover:border-ink/40">
-            다녀왔어요
-          </button>
+          <h3 data-field="place_name" class="text-lg font-bold mb-1 pr-8"></h3>
+          <p data-field="category_name" class="text-sm text-ink/60 mb-3"></p>
+          <p data-field="address" class="text-sm text-ink/70 leading-relaxed mb-4"></p>
+          <div class="flex items-center justify-between mb-4">
+            <span data-field="created_at" class="text-xs text-ink/40 font-medium"></span>
+            <a data-field="map_link" target="_blank" rel="noopener"
+              class="inline-flex items-center gap-1 text-sm font-bold text-coral hover:text-coral-dark">
+              카카오맵에서 보기
+            </a>
+          </div>
+          <div class="flex gap-2">
+            <button type="button" class="google-review-btn btn-pill flex-1 h-11 rounded-full border border-ink/20 text-ink text-sm font-bold hover:border-ink/40">
+              구글 리뷰 보기
+            </button>
+            <button type="button" class="visit-review-btn btn-pill flex-1 h-11 rounded-full border border-ink/20 text-ink text-sm font-bold hover:border-ink/40">
+              다녀왔어요
+            </button>
+          </div>
         </div>
       </article>
     </template>
@@ -351,7 +359,7 @@
           <ul id="review-modal-list" class="space-y-5 mb-6"></ul>
           <a id="review-modal-more-link" href="#" target="_blank" rel="noopener"
             class="btn-pill flex items-center justify-center w-full bg-surface text-ink text-sm font-bold px-6 py-3 rounded-full hover:bg-ink/10">
-            구글 맵에서 전체 리뷰 보기
+            전체 리뷰 보기
           </a>
         </div>
       </div>
@@ -415,9 +423,9 @@
       <div class="flex flex-col tablet:flex-row tablet:items-center tablet:justify-between gap-8 mb-10">
         <span class="text-xl font-extrabold">Hidden Gem</span>
         <nav class="flex flex-wrap gap-6 text-sm text-base/70">
-          <a href="index.html#popular" class="hover:text-base transition-colors">인기 맛집</a>
-          <a href="index.html#reviews" class="hover:text-base transition-colors">최근 리뷰</a>
+          <a href="index.html" class="hover:text-base transition-colors">홈</a>
           <a href="search.html" class="hover:text-base transition-colors">맛집 검색</a>
+          <a href="my-page.html" class="hover:text-base transition-colors">맛집 주머니</a>
         </nav>
       </div>
       <div
@@ -432,11 +440,12 @@
 
   <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script defer src="/api/supabase-config"></script>
-  <script defer src="js/auth.js"></script>
-  <script defer src="js/quick-nav.js"></script>
-  <script defer src="js/my-page.js"></script>
-  <script defer src="js/my-page-review.js"></script>
-  <script defer src="js/google-review-analysis.js"></script>
+  <script defer src="js/shared/auth.js"></script>
+  <script defer src="js/shared/quick-nav.js"></script>
+  <script defer src="js/shared/place-photo.js"></script>
+  <script defer src="js/my-page/my-page.js"></script>
+  <script defer src="js/reviews/review-modal.js"></script>
+  <script defer src="js/reviews/google-review-analysis.js"></script>
 </body>
 
 </html>

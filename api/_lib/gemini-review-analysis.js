@@ -1,13 +1,12 @@
 // Gemini API를 이용해 구글 리뷰 목록을 분석하는 공용 로직.
-// Vercel 서버리스 함수(api/analyze-reviews.js)와 로컬 개발 서버(local-server.js)가
+// Vercel 서버리스 함수(api/analyze-reviews.js)와 로컬 개발 서버(server.js)가
 // 이 모듈을 그대로 공유한다 — api/_lib/google-places.js와 동일한 패턴.
 "use strict";
 
 var GEMINI_API_BASE = "https://generativelanguage.googleapis.com/v1beta/models/";
 
-// gemini-2.5-flash는 신규 사용자에게 더 이상 제공되지 않는다는 것을 실제 호출 에러로
-// 확인했고(Google이 models/gemini-3.6-flash로 이전을 안내), 이후 또 모델이 바뀌면
-// GEMINI_MODEL 환경변수로 즉시 오버라이드할 수 있다.
+// gemini-2.5-flash는 신규 사용자에게 제공되지 않아(Google 안내) 대체됨.
+// 모델이 다시 바뀌면 GEMINI_MODEL 환경변수로 오버라이드한다.
 var DEFAULT_MODEL = "gemini-3.6-flash";
 
 var MAX_REVIEW_TEXT_LENGTH = 600;

@@ -73,8 +73,7 @@
       transform: scale(0.98);
     }
 
-    /* Tailwind의 `flex` 유틸리티와 `hidden` 속성은 동일한 우선순위라 공존 시
-       flex가 이길 수 있으므로, id 선택자로 확실히 감춘다. */
+    /* `hidden`과 Tailwind `flex`는 특이도가 동점이라 id 선택자로 확실히 감춘다(CLAUDE.md 참고). */
     #auth-modal-backdrop[hidden],
     #auth-user-status[hidden],
     #popular-places-list[hidden],
@@ -168,11 +167,19 @@
         <span class="quick-nav-chip active" aria-current="page">홈</span>
         <a href="search.html" class="quick-nav-chip">
           맛집 검색
-          <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>
+          <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M7 17 17 7" />
+            <path d="M7 7h10v10" />
+          </svg>
         </a>
         <a href="my-page.html" id="quick-nav-saved" class="quick-nav-chip">
           맛집 주머니
-          <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>
+          <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M7 17 17 7" />
+            <path d="M7 7h10v10" />
+          </svg>
         </a>
       </div>
       <div class="quick-nav-fade" aria-hidden="true"></div>
@@ -344,7 +351,7 @@
             사진
           </div>
           <span data-field="rank"
-            class="absolute top-3 left-3 flex items-center justify-center w-8 h-8 bg-coral text-base text-sm font-extrabold rounded-full card-shadow">
+            class="absolute top-3 left-3 flex items-center justify-center w-8 h-8 bg-coral text-base font-extrabold rounded-full card-shadow">
           </span>
         </div>
         <div class="p-5 tablet:p-6">
@@ -408,9 +415,9 @@
       <div class="flex flex-col tablet:flex-row tablet:items-center tablet:justify-between gap-8 mb-10">
         <span class="text-xl font-extrabold">Hidden Gem</span>
         <nav class="flex flex-wrap gap-6 text-sm text-base/70">
-          <a href="#popular" class="hover:text-base transition-colors">인기 맛집</a>
-          <a href="#reviews" class="hover:text-base transition-colors">최근 리뷰</a>
+          <a href="index.html" class="hover:text-base transition-colors">홈</a>
           <a href="search.html" class="hover:text-base transition-colors">맛집 검색</a>
+          <a href="my-page.html" class="hover:text-base transition-colors">맛집 주머니</a>
         </nav>
       </div>
       <div
@@ -424,15 +431,15 @@
   </footer>
 
   <script defer src="/api/kakao-config"></script>
-  <script defer src="js/place-photo.js"></script>
+  <script defer src="js/shared/place-photo.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script defer src="/api/supabase-config"></script>
-  <script defer src="js/auth.js"></script>
-  <script defer src="js/quick-nav.js"></script>
-  <script defer src="js/popular-places.js"></script>
-  <script defer src="js/recommendations.js"></script>
-  <script defer src="js/recent-reviews.js"></script>
-  <script defer src="js/today-pick.js"></script>
+  <script defer src="js/shared/auth.js"></script>
+  <script defer src="js/shared/quick-nav.js"></script>
+  <script defer src="js/home/popular-places.js"></script>
+  <script defer src="js/home/recommendations.js"></script>
+  <script defer src="js/home/recent-reviews.js"></script>
+  <script defer src="js/home/today-pick.js"></script>
 </body>
 
 </html>

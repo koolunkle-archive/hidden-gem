@@ -1,8 +1,7 @@
-// Hidden Gem - 맛집 검색(search.html)의 카테고리 드롭다운(#search-category-dropdown).
-// 네이티브 <select>의 옵션 팝업은 브라우저마다 다른 OS 기본 스타일로 렌더링되어
-// 나머지 pill/카드 UI와 톤이 어긋나므로, 버튼 + 커스텀 리스트박스(role="listbox")로
-// 직접 구현한다. 실제 검색에 쓰이는 값은 화면에서 숨긴 <select id="search-category-select">가
-// 그대로 들고 있어(js/kakao-search.js가 제출 시 .value를 읽어감), 검색 로직은 손대지 않는다.
+// Hidden Gem - 카테고리 드롭다운(#search-category-dropdown).
+// 네이티브 <select> 옵션 팝업은 OS별 기본 스타일이라 나머지 UI와 어긋나서 버튼 +
+// 커스텀 리스트박스(role="listbox")로 구현한다. 실제 값은 숨긴
+// <select id="search-category-select">가 들고 있어 kakao-search.js는 그대로 .value만 읽는다.
 
 (function () {
   "use strict";

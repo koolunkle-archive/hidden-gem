@@ -1,6 +1,6 @@
 // Google Places API (New)를 이용해 "식당 이름 + 좌표"로 해당 가게를 찾고
 // 별점/리뷰 요약 정보를 가져오는 공용 로직.
-// Vercel 서버리스 함수(api/google-review.js)와 로컬 개발 서버(local-server.js)가
+// Vercel 서버리스 함수(api/google-review.js)와 로컬 개발 서버(server.js)가
 // 이 모듈을 그대로 공유한다 — 두 실행 환경에서 동일한 동작을 보장하기 위함.
 "use strict";
 

@@ -1,9 +1,0 @@
-POST https://places.googleapis.com/v1/places:searchText
-X-Goog-Api-Key: {{GOOGLE_PLACES_API_KEY}}
-X-Goog-FieldMask: places.rating,places.userRatingCount,places.reviews
-
-{ 
-    "textQuery": "우래옥 서울",
-    "languageCode": "ko",
-    "regionCode": "KR"
-}

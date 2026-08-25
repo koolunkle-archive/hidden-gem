@@ -1,9 +1,7 @@
-// Hidden Gem - 메인 화면의 "지금 뜨는 인기 맛집 TOP 5" 랭킹.
-// saved_places는 RLS로 자기 것만 조회할 수 있어서, 전체 이용자가 담은 횟수를
-// 집계하는 Postgres 함수 top_saved_places(Supabase, DDL은 supabase/top_saved_places.sql)를
-// RPC로 호출한다. 이 함수는 가게 정보(이름/카테고리/주소/place_id)와 담긴 횟수만 반환하고
-// 누가 담았는지는 절대 내보내지 않으므로, RLS를 끄지 않고도 안전하게 전체 집계를 보여줄 수 있다.
-// 로그인 여부와 무관하게(anon도 실행 권한이 있음) 누구나 볼 수 있다.
+// Hidden Gem - 홈 "지금 뜨는 인기 맛집 TOP 5".
+// saved_places는 RLS로 본인 것만 조회되므로, 전체 집계는 SECURITY DEFINER 함수
+// top_saved_places(supabase/functions/top_saved_places.sql)를 RPC로 호출해 얻는다.
+// user_id는 반환하지 않으므로 RLS를 끄지 않고도 비로그인 사용자에게까지 보여줄 수 있다.
 // 지도 링크는(구글맵 대신) 카카오맵으로 통일한다 — place_id가 실제 카카오 장소 ID라서
 // 별도 검색 없이 place.map.kakao.com/{place_id}로 바로 연결할 수 있어 가장 정확하다.
 

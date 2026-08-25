@@ -1,9 +1,7 @@
-// Hidden Gem - 로그인/회원가입 기능 (Supabase Auth 기반).
-// 비밀번호 처리는 전부 Supabase에게 맡기고, 이 스크립트는 UI 상태(모달 열고 닫기,
-// 로그인/회원가입 폼 제출, 헤더의 로그인 버튼 ↔ "<이름>님 로그아웃" 전환)만 담당한다.
-//
-// 다른 기능(예: 추후의 "맛집 담기")이 로그인 여부/사용자 정보를 가져다 쓸 수 있도록
-// window.HiddenGemAuth와 hiddengem:auth-changed CustomEvent를 함께 제공한다.
+// Hidden Gem - 로그인/회원가입 (Supabase Auth). 비밀번호 처리는 Supabase에 위임하고
+// 이 스크립트는 모달/폼 UI와 헤더의 로그인↔로그아웃 전환만 담당한다.
+// 다른 스크립트가 로그인 상태를 쓸 수 있도록 window.HiddenGemAuth와
+// hiddengem:auth-changed CustomEvent를 제공한다.
 
 (function () {
   "use strict";

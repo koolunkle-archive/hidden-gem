@@ -1,7 +1,5 @@
-// Hidden Gem - AI 리뷰 분석 기능.
-// js/google-review.js가 리뷰를 렌더링할 때 쏘는 CustomEvent를 구독해
-// Gemini 기반 감정 분류/핵심 키워드/한줄 요약을 리뷰 모달 안에 이어서 보여준다.
-// 두 스크립트는 서로 직접 호출하지 않고 DOM CustomEvent로만 연동된다.
+// Hidden Gem - AI 리뷰 분석. review-modal.js가 쏘는 CustomEvent를 구독해 Gemini 기반
+// 감정 분류/핵심 키워드/한줄 요약을 모달에 이어서 보여준다. 두 스크립트는 직접 호출하지 않는다.
 
 (function () {
   "use strict";
@@ -210,9 +208,8 @@
       keywordsEl.style.height = maxY - minY + "px";
     }
 
-    // 중심에서 시작해 아르키메데스 나선을 그리며, 이미 놓인 단어와 겹치지
-    // 않는 첫 위치를 찾는다(고전적인 워드클라우드 배치 방식). 먼저 배치되는
-    // (점수가 큰) 단어일수록 중심에 가깝게 모인다.
+    // 중심에서 아르키메데스 나선을 그리며 겹치지 않는 첫 위치를 찾는다 —
+    // 먼저 배치되는(점수가 큰) 단어일수록 중심에 가깝게 모인다.
     function findSpiralSpot(w, h, placed) {
       var t = 0;
       var step = 0.25;

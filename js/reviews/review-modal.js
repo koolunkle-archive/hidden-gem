@@ -1,7 +1,6 @@
-// Hidden Gem - 구글 리뷰 보기 기능.
-// search.html의 검색 결과 카드(.restaurant-card)를 클릭하면 /api/google-review를 호출해
-// 해당 가게의 구글 평점/리뷰 요약을 모달로 보여준다.
-// 한 번 조회한 가게는 localStorage에 캐싱해 재클릭 시 재요청하지 않는다.
+// Hidden Gem - 구글 리뷰 모달(공용 모듈, search.html + my-page.html 공유).
+// 컨테이너 존재 여부로 현재 페이지를 판별해 트리거 방식만 다르게 연결한다
+// (카드 전체 클릭 vs ".google-review-btn" 클릭). 모달 UI/API 호출/캐시/이벤트는 공통.
 
 (function () {
   "use strict";
@@ -9,9 +8,51 @@
   var CACHE_PREFIX = "hiddenGem:googleReview:v1:";
   var API_ENDPOINT = "/api/google-review";
 
+  // 페이지마다 카드를 찾는 방법과 클릭 트리거 방식이 다르다.
+  var PAGE_CONFIGS = [
+    {
+      // search.html: 카드 전체가 트리거 — 카카오맵 링크/담기 버튼 클릭은 제외.
+      containerId: "search-results",
+      cardSelector: ".restaurant-card",
+      isTriggerTarget: function (target) {
+        return !target.closest("a") && !target.closest(".save-btn");
+      },
+      supportsKeyboard: true,
+    },
+    {
+      // my-page.html: ".google-review-btn" 클릭만 트리거 — 카드 전체는 아니다.
+      containerId: "saved-places-list",
+      cardSelector: ".saved-place-card",
+      isTriggerTarget: function (target) {
+        return !!target.closest(".google-review-btn");
+      },
+      supportsKeyboard: false,
+    },
+  ];
+
   function init() {
-    var resultsEl = document.getElementById("search-results");
     var backdrop = document.getElementById("review-modal-backdrop");
+    var itemTemplate = document.getElementById("google-review-item-template");
+    if (!backdrop || !itemTemplate) {
+      return;
+    }
+
+    var pageConfig = null;
+    var listEl = null;
+    for (var i = 0; i < PAGE_CONFIGS.length; i++) {
+      var candidate = document.getElementById(PAGE_CONFIGS[i].containerId);
+      if (candidate) {
+        pageConfig = PAGE_CONFIGS[i];
+        listEl = candidate;
+        break;
+      }
+    }
+
+    // 이 페이지에 검색 결과/맛집 주머니 목록이 없으면 대상 페이지가 아니므로 조용히 종료.
+    if (!pageConfig) {
+      return;
+    }
+
     var closeBtn = document.getElementById("review-modal-close");
     var titleEl = document.getElementById("review-modal-title");
     var loadingEl = document.getElementById("review-modal-loading");
@@ -19,42 +60,37 @@
     var contentEl = document.getElementById("review-modal-content");
     var ratingEl = document.getElementById("review-modal-rating");
     var countEl = document.getElementById("review-modal-count");
-    var listEl = document.getElementById("review-modal-list");
+    var reviewListEl = document.getElementById("review-modal-list");
     var moreLinkEl = document.getElementById("review-modal-more-link");
-    var itemTemplate = document.getElementById("google-review-item-template");
-
-    // 이 페이지에 검색 결과/모달 요소가 없으면 대상 페이지가 아니므로 조용히 종료.
-    if (!resultsEl || !backdrop || !itemTemplate) {
-      return;
-    }
 
     var currentRequestToken = 0;
 
-    resultsEl.addEventListener("click", function (e) {
-      // 카카오맵 링크 클릭이나 담기 버튼 클릭은 모달을 열지 않는다.
-      if (e.target.closest("a") || e.target.closest(".save-btn")) {
+    listEl.addEventListener("click", function (e) {
+      if (!pageConfig.isTriggerTarget(e.target)) {
         return;
       }
-      var card = e.target.closest(".restaurant-card");
+      var card = e.target.closest(pageConfig.cardSelector);
       if (card) {
         openReviewModal(card);
       }
     });
 
-    resultsEl.addEventListener("keydown", function (e) {
-      if (e.key !== "Enter" && e.key !== " ") {
-        return;
-      }
-      if (e.target.closest(".save-btn")) {
-        return;
-      }
-      var card = e.target.closest(".restaurant-card");
-      if (!card) {
-        return;
-      }
-      e.preventDefault();
-      openReviewModal(card);
-    });
+    if (pageConfig.supportsKeyboard) {
+      listEl.addEventListener("keydown", function (e) {
+        if (e.key !== "Enter" && e.key !== " ") {
+          return;
+        }
+        if (!pageConfig.isTriggerTarget(e.target)) {
+          return;
+        }
+        var card = e.target.closest(pageConfig.cardSelector);
+        if (!card) {
+          return;
+        }
+        e.preventDefault();
+        openReviewModal(card);
+      });
+    }
 
     if (closeBtn) {
       closeBtn.addEventListener("click", closeModal);
@@ -88,8 +124,7 @@
       backdrop.hidden = false;
       showState("loading");
 
-      // AI 리뷰 분석(js/google-review-analysis.js)이 새 가게로 전환됐음을 알고
-      // 자신의 상태를 리셋할 수 있게 알린다.
+      // google-review-analysis.js가 새 가게로 전환됐음을 알고 상태를 리셋하도록 알린다.
       document.dispatchEvent(
         new CustomEvent("hiddengem:review-modal-opening", {
           detail: { placeId: placeId },
@@ -141,7 +176,7 @@
           if (token !== currentRequestToken) {
             return;
           }
-          console.error("[google-review] 리뷰를 불러오지 못했습니다.", err);
+          console.error("[review-modal] 리뷰를 불러오지 못했습니다.", err);
           showState(
             "error",
             "리뷰를 불러오지 못했습니다. 잠시 후 다시 시도해주세요.",
@@ -173,13 +208,13 @@
         typeof data.rating === "number" ? data.rating.toFixed(1) : "평점 없음";
       countEl.textContent = "리뷰 " + (data.reviewCount || 0) + "개";
 
-      listEl.innerHTML = "";
+      reviewListEl.innerHTML = "";
       var reviews = Array.isArray(data.reviews) ? data.reviews : [];
       if (!reviews.length) {
         var emptyLi = document.createElement("li");
         emptyLi.className = "text-sm text-ink/50";
         emptyLi.textContent = "등록된 리뷰 내용이 없습니다.";
-        listEl.appendChild(emptyLi);
+        reviewListEl.appendChild(emptyLi);
       } else {
         reviews.forEach(function (review) {
           var node = itemTemplate.content.cloneNode(true);
@@ -191,7 +226,7 @@
           );
           setText(node, "date", review.relativeTime || "");
           setText(node, "text", review.text || "");
-          listEl.appendChild(node);
+          reviewListEl.appendChild(node);
         });
       }
 
@@ -202,13 +237,11 @@
         moreLinkEl.hidden = true;
       }
 
-      // #review-ai-section은 review-modal-content의 자손이므로, AI 분석 스크립트가
-      // (캐시 적중 시 동기적으로) 워드클라우드 크기를 재기 전에 이 컨테이너부터 먼저
-      // 화면에 보이게 해야 한다. 순서가 바뀌면 숨겨진 상태에서 span 크기가 0으로
-      // 측정되어 단어들이 한 지점에 뭉쳐 보이는 버그가 생긴다.
+      // showState는 이벤트 발송보다 먼저 호출해야 한다 — 캐시 적중 시 동기 실행되는
+      // 워드클라우드 배치가 숨겨진 상태(크기 0)에서 일어나면 단어가 한 점에 뭉친다.
       showState("content");
 
-      // AI 리뷰 분석 스크립트가 이 결과를 이어받아 분석을 시작(또는 자신을 숨김)할 수 있게 알린다.
+      // google-review-analysis.js가 결과를 이어받아 분석을 시작(또는 숨김)한다.
       document.dispatchEvent(
         new CustomEvent("hiddengem:google-review-rendered", {
           detail: {

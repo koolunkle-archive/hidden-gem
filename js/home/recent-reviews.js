@@ -1,9 +1,7 @@
-// Hidden Gem - 메인 화면 "방금 다녀왔어요"(#reviews) 목록.
-// visit_reviews는 RLS로 자기 것만 조회할 수 있어서, 전체 이용자의 방문 후기를 최신순으로
-// 집계하는 Postgres 함수 recent_visit_reviews(Supabase, DDL은 supabase/recent_visit_reviews.sql)를
-// RPC로 호출한다. 이 함수는 가게 정보 + 만족여부 + 한줄평 + 작성 시각만 반환하고 누가
-// 남겼는지는 절대 내보내지 않으므로, RLS를 끄지 않고도 안전하게 전체 목록을 보여줄 수 있다.
-// 로그인 여부와 무관하게(anon도 실행 권한이 있음) 누구나 볼 수 있다.
+// Hidden Gem - 홈 "방금 다녀왔어요"(#reviews).
+// visit_reviews는 RLS로 본인 것만 조회되므로, 전체 목록은 SECURITY DEFINER 함수
+// recent_visit_reviews(supabase/functions/recent_visit_reviews.sql)를 RPC로 호출해 얻는다.
+// user_id는 반환하지 않으므로 비로그인 사용자에게도 보여줄 수 있다.
 
 (function () {
   "use strict";
